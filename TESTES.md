@@ -7,7 +7,22 @@ apresentação. O enunciado exige que o projeto seja **testado pela equipe antes
 garantindo que seja possível instalá-lo e executá-lo corretamente em outro ambiente** — é
 exatamente o que a Parte 6 deste documento verifica.
 
+Instalação e passo a passo resumido: [README.md](README.md). Modelagem e estrutura do código:
+[ARQUITETURA.md](ARQUITETURA.md).
+
 Marque cada item conforme for testando.
+
+## Sumário
+
+- [Parte 0 — Preparação do ambiente](#parte-0--preparação-do-ambiente)
+- [Parte 1 — Banco de dados e índices](#parte-1--banco-de-dados-e-índices)
+- [Parte 2 — Demonstração automática](#parte-2--demonstração-automática-o-teste-mais-importante)
+- [Parte 3 — Menu do terminal](#parte-3--menu-do-terminal)
+- [Parte 4 — Interface web](#parte-4--interface-web-extra-opcional)
+- [Parte 5 — Logs](#parte-5--logs)
+- [Parte 6 — Teste em outro ambiente](#parte-6--teste-em-outro-ambiente-exigência-do-item-12)
+- [Parte 7 — Checklist final de entrega](#parte-7--checklist-final-de-entrega)
+- [Parte 8 — Roteiro de apresentação](#parte-8--roteiro-de-apresentação-5-a-8-minutos)
 
 ---
 
@@ -19,7 +34,7 @@ Marque cada item conforme for testando.
 | 0.2 | Conferir o npm | `npm -v` | qualquer versão recente |
 | 0.3 | Instalar o MongoDB | `winget install MongoDB.Server` ou o instalador do site | instalação concluída |
 | 0.4 | Conferir o serviço | `Get-Service MongoDB` (PowerShell) | `Status = Running` |
-| 0.5 | Instalar as dependências | `cd projeto1` e `npm install` | "added 12 packages", pasta `node_modules` criada |
+| 0.5 | Instalar as dependências | `cd zapchat` e `npm install` | "added 12 packages", pasta `node_modules` criada |
 
 > Se o serviço não estiver rodando: `net start MongoDB` (pode exigir PowerShell como administrador).
 
@@ -57,7 +72,8 @@ Percorre tudo em uma execução só. Confira na saída:
       participante, exclusão de usuário com dependências e exclusão de conversa inteira.
 - [ ] **Seção 6** — termina com `✅ 34 excecoes capturadas, tratadas e registradas em log`.
 - [ ] Nenhuma linha com `nenhuma excecao foi lancada (verificar regra)`.
-- [ ] **Seção 7** — mostra `Registros de erro no arquivo: 34` e imprime os últimos registros do log.
+- [ ] **Seção 7** — informa quantos registros existem em `logs/errors.log` (34 quando o arquivo está
+      limpo; o log acumula entre execuções) e imprime os últimos registros gravados.
 - [ ] O comando termina **sem travar e sem stack trace** na tela.
 
 **O que isso comprova:** critérios *Implementação das operações CRUD*, *Validação dos campos
@@ -149,17 +165,17 @@ conexão exigido no item 8 do enunciado.
 
 ## Parte 6 — Teste em outro ambiente (exigência do item 12)
 
-1. Copie a pasta `projeto1` para outro computador (ou outra pasta), **sem `node_modules`**:
+1. Copie a pasta `zapchat` para outro computador (ou outra pasta), **sem `node_modules`**:
 
    ```bash
-   # a partir da pasta que contém projeto1
-   robocopy projeto1 C:\teste-entrega\projeto1 /E /XD node_modules logs
+   # a partir da pasta que contém zapchat
+   robocopy zapchat C:\teste-entrega\zapchat /E /XD node_modules logs .git
    ```
 
 2. No destino, execute apenas:
 
    ```bash
-   cd C:\teste-entrega\projeto1
+   cd C:\teste-entrega\zapchat
    npm install
    npm run setup
    npm run seed
