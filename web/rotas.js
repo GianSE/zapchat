@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * Rotas da API JSON (recurso extra do projeto).
+ * Camada CONTROLLER (MVC) da interface web - rotas da API JSON (recurso extra).
  *
  * Cada rota apenas chama as classes de entidade ou o ChatService e devolve o
  * resultado. Toda validacao, regra de negocio, tratamento de excecao e registro

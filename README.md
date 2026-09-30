@@ -12,6 +12,14 @@ campos obrigatórios, tratamento de exceções e registro de logs em arquivo.
 **5 coleções** (`usuarios`, `contatos`, `conversas`, `mensagens`, `reacoes`) e **6 classes**
 (`Modelo` abstrata + 5 entidades). Única dependência externa: o driver `mongodb`.
 
+**Organização MVC** — cada camada em sua própria pasta:
+
+| Camada | Onde está |
+| --- | --- |
+| **Model** | `src/models/` (5 entidades + `Modelo` abstrata) e `src/services/ChatService.js` |
+| **View** | `src/views/Terminal.js` (terminal) e `web/publico/` (navegador) |
+| **Controller** | `src/controllers/Menu.js` (terminal) e `web/rotas.js` (API) |
+
 | Documento | Conteúdo |
 | --- | --- |
 | **README.md** (este) | instalar e testar, passo a passo |

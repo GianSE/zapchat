@@ -22,7 +22,7 @@ const Database = require('../src/database/Database');
 const Manutencao = require('../src/database/Manutencao');
 const ChatService = require('../src/services/ChatService');
 const { Usuario, Contato, Conversa, Mensagem, Reacao } = require('../src/models');
-const Terminal = require('../src/cli/Terminal');
+const Terminal = require('../src/views/Terminal');
 const logger = require('../src/utils/Logger');
 const { ErroAplicacao } = require('../src/errors');
 

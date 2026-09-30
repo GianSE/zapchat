@@ -10,7 +10,7 @@
  */
 
 const Database = require('./database/Database');
-const Terminal = require('./cli/Terminal');
+const Terminal = require('./views/Terminal');
 const logger = require('./utils/Logger');
 const config = require('./config/config');
 const { ErroAplicacao, ErroConexao } = require('./errors');

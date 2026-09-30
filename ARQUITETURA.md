@@ -13,7 +13,7 @@ Para instalar e testar, veja o [README](README.md). Para o roteiro de validaçã
 2. [Entidades e coleções](#2-entidades-e-coleções)
 3. [Relacionamentos](#3-relacionamentos)
 4. [Índices](#4-índices)
-5. [Estrutura de pastas](#5-estrutura-de-pastas)
+5. [Estrutura de pastas e organização MVC](#5-estrutura-de-pastas-e-organização-mvc)
 6. [Orientação a Objetos](#6-orientação-a-objetos)
 7. [Validação dos dados](#7-validação-dos-dados)
 8. [Tratamento de exceções](#8-tratamento-de-exceções)
@@ -170,7 +170,7 @@ Criados por `npm run setup` (ou pela opção 13 do menu).
 
 ---
 
-## 5. Estrutura de pastas
+## 5. Estrutura de pastas e organização MVC
 
 ```
 zapchat/
@@ -197,7 +197,7 @@ zapchat/
 │   │   ├── ErroConexao.js       # falha de conexão com o banco
 │   │   └── index.js
 │   │
-│   ├── models/                  # entidades (classes de domínio + acesso aos dados)
+│   ├── models/                  # MODEL — entidades (domínio + acesso aos dados)
 │   │   ├── Modelo.js            # classe abstrata com o CRUD genérico
 │   │   ├── Usuario.js
 │   │   ├── Contato.js
@@ -206,17 +206,19 @@ zapchat/
 │   │   ├── Reacao.js
 │   │   └── index.js
 │   │
-│   ├── services/
-│   │   └── ChatService.js       # casos de uso que envolvem mais de uma coleção
+│   ├── services/                # MODEL — regras que envolvem mais de uma coleção
+│   │   └── ChatService.js
 │   │
-│   ├── utils/
-│   │   ├── Logger.js            # gravação dos logs em arquivo
-│   │   ├── Validador.js         # validações reutilizáveis
-│   │   └── Seguranca.js         # hash e verificação de senha (crypto nativo)
+│   ├── views/                   # VIEW — apresentação
+│   │   └── Terminal.js          # formatação da saída no terminal
 │   │
-│   └── cli/
-│       ├── Menu.js              # menu interativo do terminal
-│       └── Terminal.js          # formatação da saída no terminal
+│   ├── controllers/             # CONTROLLER — recebe a entrada e aciona o Model
+│   │   └── Menu.js              # menu interativo do terminal
+│   │
+│   └── utils/
+│       ├── Logger.js            # gravação dos logs em arquivo
+│       ├── Validador.js         # validações reutilizáveis
+│       └── Seguranca.js         # hash e verificação de senha (crypto nativo)
 │
 ├── scripts/
 │   ├── setup.js                 # cria as coleções e os índices
@@ -227,13 +229,37 @@ zapchat/
 ├── web/                         # interface web de teste (extra opcional)
 │   ├── servidor.js              # ponto de entrada (npm run web)
 │   ├── ServidorWeb.js           # servidor HTTP nativo + tradução das exceções em status HTTP
-│   ├── rotas.js                 # rotas da API JSON (só chamam as classes do núcleo)
-│   └── publico/                 # index.html, estilo.css e app.js
+│   ├── rotas.js                 # CONTROLLER web — rotas da API JSON
+│   └── publico/                 # VIEW web — index.html, estilo.css e app.js
 │
 └── logs/
     ├── errors.log               # somente exceções capturadas
     └── app.log                  # histórico completo de operações
 ```
+
+### Organização MVC
+
+O projeto segue o padrão **MVC**, com cada camada em sua própria pasta:
+
+| Camada | Pasta / arquivos | Responsabilidade |
+| --- | --- | --- |
+| **Model** | `src/models/` (5 entidades + `Modelo` abstrata) e `src/services/ChatService.js` | representa os dados, as regras de negócio e todo o acesso ao MongoDB |
+| **View** | `src/views/Terminal.js` (terminal) e `web/publico/` (navegador) | só apresenta informação; não acessa o banco nem conhece as entidades |
+| **Controller** | `src/controllers/Menu.js` (terminal) e `web/rotas.js` (API) | recebe a entrada do usuário, aciona o Model e entrega o resultado à View |
+
+As demais pastas são **infraestrutura**, usadas pelas três camadas: `src/database/` (conexão),
+`src/errors/` (exceções), `src/utils/` (log, validação, senha) e `src/config/` (configuração).
+
+O fluxo de uma operação é sempre o mesmo:
+
+```
+usuário → Controller (Menu / rotas) → Model (Usuario, Mensagem, ChatService...) → MongoDB
+                                            ↓
+                                     View (Terminal / página)
+```
+
+Um indício prático da separação: `src/views/Terminal.js` **não tem nenhum `require`** de entidade,
+serviço ou banco — ele só recebe dados prontos e formata.
 
 ### Separação de responsabilidades
 
@@ -243,7 +269,8 @@ zapchat/
 - **Entidades** cuidam da sua coleção e das consultas próprias da temática.
 - **`ChatService`** coordena operações que envolvem várias coleções (enviar mensagem e atualizar o
   resumo da conversa, excluir usuário com todas as dependências, montar o painel do usuário).
-- **`Menu`/`Terminal`** e **`web/`** cuidam apenas da interface; nenhuma regra de negócio mora neles.
+- **`controllers/Menu.js`**, **`views/Terminal.js`** e **`web/`** cuidam apenas da interface;
+  nenhuma regra de negócio mora neles.
 
 ---
 
@@ -255,7 +282,7 @@ zapchat/
 | **Herança** | `Usuario`, `Contato`, `Conversa`, `Mensagem` e `Reacao` estendem `Modelo`; as exceções estendem `ErroAplicacao` |
 | **Classe abstrata** | `Modelo` não pode ser instanciada e exige `colecao` e `paraDocumento()` nas subclasses |
 | **Polimorfismo** | `paraDocumento()`, `validarCampos()`, `paraTexto()`, `copiarDe()` e `transformarAtualizacao()` são redefinidos por cada entidade e usados pelo código genérico da classe base |
-| **Encapsulamento** | `#senhaHash` em `Usuario`, `#cliente`/`#db` em `Database`, `#usuario`/`#leitor` em `Menu` |
+| **Encapsulamento** | `#senhaHash` em `Usuario`, `#cliente`/`#db` em `Database`, `#usuario`/`#leitor` em `Menu` (controller) |
 | **Getters** | `id`, `nomeExibicao`, `previa`, `enviadaEm`, `ehGrupo`, `quantidadeParticipantes` |
 | **Métodos estáticos** | operações de coleção (`Usuario.buscarPorEmail`, `Mensagem.pesquisar`, ...) |
 | **Métodos de instância** | `salvar()`, `atualizar()`, `excluir()`, `recarregar()` |
@@ -404,7 +431,8 @@ testar e apresentar a aplicação de forma visual.
 | Delete | `excluirPorId`, `excluir`, `excluirMuitos`, `Mensagem.excluirParaTodos` (lógica), `ChatService.excluirMensagemDefinitivamente`, `ChatService.excluirConversa`, `ChatService.excluirUsuario` (cascata) |
 | Orientação a Objetos | herança, classe abstrata, polimorfismo, encapsulamento e Singleton — seção 6 |
 | Validação de campos obrigatórios | `Modelo.validar()`, `Modelo.prepararAtualizacao()` e `src/utils/Validador.js` |
-| Tratamento de exceções | `src/errors/`, `Modelo.executar()`, `Aplicacao.executar()` e `Menu.executar()` |
+| Tratamento de exceções | `src/errors/`, `Modelo.executar()`, `Aplicacao.executar()` e `Menu.executar()` (controller) |
 | Registro de logs | `src/utils/Logger.js` → `logs/errors.log` e `logs/app.log` |
-| Modularização | `src/models`, `src/services`, `src/database`, `src/utils`, `src/cli`, `src/errors`, `scripts` |
+| Organização em MVC | `src/models` + `src/services` (Model), `src/views` (View), `src/controllers` (Controller) — seção 5 |
+| Modularização | `src/models`, `src/services`, `src/views`, `src/controllers`, `src/database`, `src/utils`, `src/errors`, `scripts` |
 | Projeto testado antes da entrega | roteiro completo em [TESTES.md](TESTES.md) |

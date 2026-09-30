@@ -1,10 +1,11 @@
 'use strict';
 
 /**
- * Funcoes de apresentacao no terminal.
+ * Camada VIEW (MVC) - apresentacao no terminal.
  *
  * Concentra a formatacao das mensagens exibidas ao usuario, mantendo as demais
- * classes livres de codigo de interface.
+ * classes livres de codigo de interface. Nao acessa o banco de dados nem conhece
+ * as entidades: apenas recebe dados prontos e os exibe.
  */
 
 /** Largura padrao das linhas divisorias. */

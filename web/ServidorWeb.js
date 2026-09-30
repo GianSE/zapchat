@@ -20,7 +20,7 @@ const fs = require('node:fs/promises');
 const path = require('node:path');
 
 const rotas = require('./rotas');
-const Terminal = require('../src/cli/Terminal');
+const Terminal = require('../src/views/Terminal');
 const logger = require('../src/utils/Logger');
 const {
   ErroAplicacao,

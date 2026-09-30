@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * Classe base (abstrata) de todas as entidades da aplicacao.
+ * Camada MODEL (MVC) - classe base (abstrata) de todas as entidades.
  *
  * Concentra o comportamento comum a qualquer colecao do MongoDB:
  *   - operacoes CRUD genericas (inserir, consultar, atualizar, excluir);

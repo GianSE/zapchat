@@ -9,7 +9,7 @@
  */
 
 const Aplicacao = require('./src/Aplicacao');
-const Menu = require('./src/cli/Menu');
+const Menu = require('./src/controllers/Menu');
 
 Aplicacao.executar('menu', async () => {
   const menu = new Menu();

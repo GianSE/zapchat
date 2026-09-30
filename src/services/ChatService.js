@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * Servico de aplicacao do ZapChat.
+ * Camada MODEL (MVC) - servico de aplicacao do ZapChat.
  *
  * Enquanto cada classe de entidade cuida da sua propria colecao, este servico
  * coordena os casos de uso que envolvem mais de uma colecao ao mesmo tempo -

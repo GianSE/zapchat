@@ -11,7 +11,7 @@
 
 const Aplicacao = require('../src/Aplicacao');
 const Manutencao = require('../src/database/Manutencao');
-const Terminal = require('../src/cli/Terminal');
+const Terminal = require('../src/views/Terminal');
 const config = require('../src/config/config');
 
 Aplicacao.executar('setup', async () => {

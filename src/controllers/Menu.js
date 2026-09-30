@@ -1,11 +1,11 @@
 'use strict';
 
 /**
- * Menu interativo do ZapChat, executado no terminal.
+ * Camada CONTROLLER (MVC) - menu interativo executado no terminal.
  *
  * Esta classe cuida apenas da interacao com o usuario: le as opcoes digitadas,
- * chama as classes de entidade ou o ChatService e apresenta o resultado. Toda
- * regra de negocio permanece nas classes de dominio.
+ * chama o Model (entidades e ChatService) e entrega o resultado a View
+ * (Terminal). Toda regra de negocio permanece nas classes de dominio.
  *
  * Cada acao e executada dentro de um tratamento de excecoes: se algo falhar, a
  * mensagem e exibida, o erro fica registrado no arquivo de log e o menu
@@ -18,7 +18,7 @@ const { stdin: entrada, stdout: saida } = require('node:process');
 const { Usuario, Contato, Conversa, Mensagem, Reacao } = require('../models');
 const ChatService = require('../services/ChatService');
 const Manutencao = require('../database/Manutencao');
-const Terminal = require('./Terminal');
+const Terminal = require('../views/Terminal');
 const logger = require('../utils/Logger');
 const { ErroAplicacao } = require('../errors');
 
