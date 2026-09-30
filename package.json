@@ -1,0 +1,29 @@
+{
+  "name": "zapchat",
+  "version": "1.0.0",
+  "description": "ZapChat - aplicacao Back-End de mensagens instantaneas com Node.js e MongoDB (MongoDB Driver) - Projeto 1 de EC48B Programacao Web Back-End",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "web": "node web/servidor.js",
+    "setup": "node scripts/setup.js",
+    "seed": "node scripts/seed.js",
+    "demo": "node scripts/demo.js",
+    "reset": "node scripts/reset.js"
+  },
+  "keywords": [
+    "nodejs",
+    "mongodb",
+    "crud",
+    "mensagens-instantaneas",
+    "orientacao-a-objetos"
+  ],
+  "author": "Gian Pedro Rodrigues (RA 2503638)",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "mongodb": "^6.9.0"
+  }
+}
