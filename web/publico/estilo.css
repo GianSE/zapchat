@@ -1,0 +1,252 @@
+/* ZapChat - visualizador somente leitura (CSS puro, sem frameworks) */
+
+:root {
+  --fundo: #0f1720;
+  --fundo-2: #16212c;
+  --fundo-3: #1e2b38;
+  --borda: #27384a;
+  --texto: #e8eef5;
+  --fraco: #93a4b8;
+  --verde: #25d366;
+  --minha: #1f6f4a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  height: 100vh;
+  overflow: hidden;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  background: var(--fundo);
+  color: var(--texto);
+}
+
+/* ------------------------------------------------------------------- topo */
+
+.topo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 58px;
+  padding: 0 18px;
+  background: var(--fundo-2);
+  border-bottom: 1px solid var(--borda);
+}
+
+.marca {
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.selo {
+  padding: 2px 8px;
+  border: 1px solid var(--borda);
+  border-radius: 999px;
+  color: var(--fraco);
+  font-size: 0.72rem;
+}
+
+.seletor {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  color: var(--fraco);
+  font-size: 0.8rem;
+}
+
+select,
+.botao {
+  padding: 7px 11px;
+  background: var(--fundo-3);
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  color: var(--texto);
+  font-family: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.botao:hover {
+  filter: brightness(1.2);
+}
+
+/* --------------------------------------------------------------- estrutura */
+
+.conteudo {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  height: calc(100vh - 58px);
+}
+
+.lateral {
+  padding: 14px;
+  overflow-y: auto;
+  background: var(--fundo-2);
+  border-right: 1px solid var(--borda);
+}
+
+.painel {
+  padding: 18px;
+  overflow-y: auto;
+}
+
+h2 {
+  margin: 0 0 4px;
+  font-size: 1rem;
+}
+
+.legenda {
+  margin: 0 0 14px;
+  color: var(--fraco);
+  font-size: 0.82rem;
+}
+
+/* ------------------------------------------------------------------ lista */
+
+.lista {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 6px;
+}
+
+.item {
+  padding: 10px 12px;
+  background: var(--fundo-3);
+  border: 1px solid transparent;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.item:hover,
+.item.ativo {
+  border-color: var(--verde);
+}
+
+.item b {
+  display: block;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.item span {
+  display: block;
+  margin-top: 3px;
+  color: var(--fraco);
+  font-size: 0.77rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Seletor com ".item" para vencer a cor definida em ".item span". */
+.item .badge {
+  float: right;
+  display: inline-block;
+  margin: 0;
+  background: var(--verde);
+  color: #07130c;
+  border-radius: 999px;
+  padding: 0 7px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+/* --------------------------------------------------------------- mensagens */
+
+.mensagem {
+  max-width: min(70%, 620px);
+  margin-bottom: 10px;
+  padding: 8px 12px;
+  background: var(--fundo-3);
+  border-radius: 12px 12px 12px 3px;
+}
+
+.mensagem.minha {
+  margin-left: auto;
+  background: var(--minha);
+  border-radius: 12px 12px 3px 12px;
+}
+
+.mensagem.sistema {
+  max-width: 100%;
+  margin: 10px auto;
+  background: none;
+  border: 1px dashed var(--borda);
+  border-radius: 999px;
+  color: var(--fraco);
+  font-size: 0.78rem;
+  text-align: center;
+}
+
+.autor {
+  margin-bottom: 2px;
+  color: var(--verde);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.texto {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.rodape {
+  margin-top: 5px;
+  color: var(--fraco);
+  font-size: 0.72rem;
+}
+
+.vazio {
+  color: var(--fraco);
+  font-size: 0.85rem;
+}
+
+/* ---------------------------------------------------------------- tabelas */
+
+table {
+  width: 100%;
+  margin-bottom: 18px;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+th,
+td {
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--borda);
+  text-align: left;
+}
+
+th {
+  color: var(--fraco);
+  font-weight: 600;
+}
+
+h3 {
+  margin: 0 0 6px;
+  color: var(--verde);
+  font-size: 0.85rem;
+}
+
+@media (max-width: 820px) {
+  .conteudo {
+    grid-template-columns: 1fr;
+  }
+
+  .lateral {
+    max-height: 38vh;
+  }
+}

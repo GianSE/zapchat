@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ZapChat — visualizador</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💬</text></svg>" />
+    <link rel="stylesheet" href="estilo.css" />
+  </head>
+
+  <body>
+    <header class="topo">
+      <span class="marca">💬 ZapChat</span>
+      <span class="selo">somente leitura</span>
+
+      <label class="seletor">
+        Ver como
+        <select id="usuario"></select>
+      </label>
+
+      <button type="button" id="botao-estatisticas" class="botao">📊 Estatísticas</button>
+    </header>
+
+    <main class="conteudo">
+      <aside class="lateral">
+        <h2>Conversas</h2>
+        <ul id="conversas" class="lista"></ul>
+      </aside>
+
+      <section class="painel">
+        <h2 id="titulo">Selecione uma conversa</h2>
+        <p id="subtitulo" class="legenda"></p>
+        <div id="corpo"></div>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
