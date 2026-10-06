@@ -2,41 +2,21 @@
 
 Projeto 1 de **EC48B — Programação Web Back-End** · Gian Pedro Rodrigues (RA 2503638)
 
-Este roteiro serve para (1) validar o projeto antes da entrega e (2) guiar a demonstração na
-apresentação. O enunciado exige que o projeto seja **testado pela equipe antes da entrega,
-garantindo que seja possível instalá-lo e executá-lo corretamente em outro ambiente** — é
-exatamente o que a Parte 6 deste documento verifica.
+Roteiro para validar o projeto antes da entrega e guiar a demonstração. Instalação:
+[README.md](README.md). Modelagem e estrutura: [ARQUITETURA.md](ARQUITETURA.md).
 
-Instalação e passo a passo resumido: [README.md](README.md). Modelagem e estrutura do código:
-[ARQUITETURA.md](ARQUITETURA.md).
-
-Marque cada item conforme for testando.
+A Parte 6 cobre a exigência do item 12 do enunciado (instalar e executar em outro ambiente).
 
 ## Sumário
 
-- [Parte 0 — Preparação do ambiente](#parte-0--preparação-do-ambiente)
 - [Parte 1 — Banco de dados e índices](#parte-1--banco-de-dados-e-índices)
-- [Parte 2 — Demonstração automática](#parte-2--demonstração-automática-o-teste-mais-importante)
-- [Parte 3 — Menu do terminal](#parte-3--menu-do-terminal)
-- [Parte 4 — Interface web](#parte-4--interface-web-extra-opcional)
-- [Parte 5 — Logs](#parte-5--logs)
+- [Parte 2 — Demonstração automática](#parte-2--demonstração-automática)
+- [Parte 3 — Trilha completa do menu](#parte-3--trilha-completa-do-menu)
+- [Parte 4 — Logs](#parte-4--logs)
+- [Parte 5 — Visualizador web](#parte-5--visualizador-web-extra-opcional)
 - [Parte 6 — Teste em outro ambiente](#parte-6--teste-em-outro-ambiente-exigência-do-item-12)
 - [Parte 7 — Checklist final de entrega](#parte-7--checklist-final-de-entrega)
 - [Parte 8 — Roteiro de apresentação](#parte-8--roteiro-de-apresentação-5-a-8-minutos)
-
----
-
-## Parte 0 — Preparação do ambiente
-
-| # | Passo | Comando | Resultado esperado |
-| --- | --- | --- | --- |
-| 0.1 | Conferir o Node.js | `node -v` | v18 ou superior |
-| 0.2 | Conferir o npm | `npm -v` | qualquer versão recente |
-| 0.3 | Instalar o MongoDB | `winget install MongoDB.Server` ou o instalador do site | instalação concluída |
-| 0.4 | Conferir o serviço | `Get-Service MongoDB` (PowerShell) | `Status = Running` |
-| 0.5 | Instalar as dependências | `cd zapchat` e `npm install` | "added 12 packages", pasta `node_modules` criada |
-
-> Se o serviço não estiver rodando: `net start MongoDB` (pode exigir PowerShell como administrador).
 
 ---
 
@@ -52,114 +32,195 @@ Marque cada item conforme for testando.
 
 ---
 
-## Parte 2 — Demonstração automática (o teste mais importante)
+## Parte 2 — Demonstração automática
 
 ```bash
 npm run demo
 ```
 
-Percorre tudo em uma execução só. Confira na saída:
+Percorre CREATE → READ → UPDATE → DELETE → erros → logs em uma saída só. Confira:
 
-- [ ] **Seção 2 (CREATE)** — 5 usuários, contatos, conversa privada, grupo, mensagens (texto, imagem,
-      arquivo, resposta e sistema) e reações inseridos.
-- [ ] Aparece `hash de Ana: ...` — comprova que **a senha não é gravada em texto puro**.
-- [ ] **Seção 3 (READ)** — tabelas de painel do usuário, histórico com `$lookup` (autor + reações +
-      mensagem respondida), busca por texto, estatísticas por autor, ranking e paginação.
-- [ ] **Seção 4 (UPDATE)** — perfil, senha, edição de mensagem (`editada: true`), renomear grupo,
-      adicionar participante, promover administrador, favoritar contato e alternar reação.
-- [ ] **Seção 5 (DELETE)** — exclusão lógica ("apagada para todos", documento **preservado**),
-      exclusão definitiva (remove reações em cascata e recalcula o resumo da conversa), remoção de
-      participante, exclusão de usuário com dependências e exclusão de conversa inteira.
-- [ ] **Seção 6** — termina com `✅ 34 excecoes capturadas, tratadas e registradas em log`.
-- [ ] Nenhuma linha com `nenhuma excecao foi lancada (verificar regra)`.
-- [ ] **Seção 7** — informa quantos registros existem em `logs/errors.log` (34 quando o arquivo está
-      limpo; o log acumula entre execuções) e imprime os últimos registros gravados.
-- [ ] O comando termina **sem travar e sem stack trace** na tela.
+- [ ] inserções nas 5 coleções, com anexo, resposta e aviso do sistema;
+- [ ] `hash de Ana: ...` — a senha não é gravada em texto puro;
+- [ ] consultas com `$lookup`, busca por texto, paginação, ranking e estatísticas;
+- [ ] atualizações (perfil, senha, edição de mensagem, renomear grupo, promover administrador);
+- [ ] exclusão lógica (documento **preservado**) e definitiva (reações em cascata);
+- [ ] termina com `✅ 34 excecoes capturadas, tratadas e registradas em log`;
+- [ ] nenhuma linha com `nenhuma excecao foi lancada`, nenhum stack trace na tela.
 
-**O que isso comprova:** critérios *Implementação das operações CRUD*, *Validação dos campos
-obrigatórios*, *Tratamento de erros e exceções* e *Implementação e armazenamento de logs*.
+**Comprova:** CRUD, validação dos campos obrigatórios, tratamento de erros e logs.
 
 ---
 
-## Parte 3 — Menu do terminal
+## Parte 3 — Trilha completa do menu
 
 ```bash
-npm run seed    # carrega os dados de exemplo
+npm run seed    # recarrega os dados de exemplo (apaga o que existir)
 npm start       # abre o menu
 ```
 
-Após o `seed`, confira: **5 usuários, 9 contatos, 4 conversas, 15 mensagens e 5 reações**.
+Senha de todos os usuários de exemplo: **`senha123`**. Siga as etapas **de cima para baixo** —
+algumas dependem da anterior. Em qualquer lista, `0` cancela; se sair do trilho, rode `npm run seed`
+e recomece. **ENTER** = Enter sem digitar nada (aceita o padrão ou volta ao menu).
 
-Roteiro no menu (senha de todos: `senha123`):
+### Etapa 0 — Trilha guiada (opção 14)
 
-| # | Opção | O que fazer | Resultado esperado |
-| --- | --- | --- | --- |
-| 3.1 | `1` | Entrar com `ana@zapchat.dev` / `senha123` | "Bem-vindo(a), aninha!" e o total de não lidas |
-| 3.2 | `1` | Entrar com a senha `errada` | `ErroRegraNegocio: E-mail ou senha incorretos` — e o menu **continua funcionando** |
-| 3.3 | `2` | Cadastrar com nome `Ab`, e-mail `zzz`, senha `123` | `ErroValidacao` listando os 3 problemas |
-| 3.4 | `2` | Cadastrar um usuário válido | "Usuario cadastrado" com o `_id` |
-| 3.5 | `6` | Minhas conversas | tabela com as conversas e a coluna `naoLidas` |
-| 3.6 | `7` | Abrir uma conversa | histórico com autor, hora, anexo, 📌 e reações; avisa quantas foram marcadas como lidas |
-| 3.7 | `8` | Enviar mensagem de texto para a conversa | "Mensagem enviada" com o `_id` |
-| 3.8 | `8` | Enviar uma mensagem do tipo `imagem` | pede nome/URL/tamanho do anexo e envia |
-| 3.9 | `9` → `2` | Reagir a uma mensagem | "Reacao adicionada" + resumo; repetindo o mesmo emoji ela é **removida** |
-| 3.10 | `9` → `1` | Editar uma mensagem sua | conteúdo alterado e marcado como editado |
-| 3.11 | `9` → `4` | Apagar para todos | passa a exibir "Esta mensagem foi apagada" |
-| 3.12 | `10` → `1` | Criar um grupo com 2 participantes | grupo criado com mensagem automática do sistema |
-| 3.13 | `10` → `2` | Adicionar participante logado como **Carla** (não admin) | `ErroRegraNegocio: Somente administradores...` |
-| 3.14 | `11` | Pesquisar `README` | lista as mensagens que contêm o termo |
-| 3.15 | `12` | Estatísticas | documentos por coleção, ranking de remetentes e emojis |
-| 3.16 | `13` → `3` | Listar índices | os 22 índices criados |
-| 3.17 | `0` | Sair | "Ate logo" e encerramento limpo |
-
-**O que isso comprova:** critérios *Implementação e adequação à temática* e *Orientação a Objetos e
-organização das classes* (o menu só chama as classes; nenhuma regra está nele).
-
----
-
-## Parte 4 — Interface web (extra opcional)
-
-```bash
-npm run web
-```
-
-Abra <http://localhost:3000> no navegador.
-
-| # | Ação | Resultado esperado |
+| # | Digite | Deve acontecer |
 | --- | --- | --- |
-| 4.1 | Entrar com `ana@zapchat.dev` / `senha123` | abre a tela principal com as conversas e o total de não lidas |
-| 4.2 | Clicar em uma conversa | histórico em balões, avisos do sistema, anexos, 📌, reações e contador de leituras |
-| 4.3 | Enviar uma mensagem | aparece na hora; a prévia da conversa na lateral é atualizada |
-| 4.4 | Escolher o tipo `imagem` e enviar | abre o formulário de anexo (nome, URL, tamanho) |
-| 4.5 | Passar o mouse sobre uma mensagem e clicar em 😀 | reação aplicada; clicando no mesmo emoji ela sai |
-| 4.6 | Editar (✏️) uma mensagem sua | conteúdo alterado e marcado como "(editada)" |
-| 4.7 | Apagar (🗑️) escolhendo "Apagar para todos" | vira "Esta mensagem foi apagada", em itálico |
-| 4.8 | Apagar escolhendo "Excluir definitivamente" | some da lista e o resumo da conversa é recalculado |
-| 4.9 | "+ Grupo" com dois participantes | grupo criado com a mensagem automática do sistema |
-| 4.10 | Aba **Contatos** | agenda com favoritar ⭐, bloquear 🚫, remover 🗑️ e abrir conversa 💬 |
-| 4.10b | Bloquear um contato e depois desbloquear | ao bloquear, o contato **continua na lista**, com borda vermelha e "· bloqueado"; clicar de novo em 🚫 desbloqueia |
-| 4.11 | Aba **Busca**, procurar `README` | resultados clicáveis que abrem a conversa |
-| 4.12 | Botão **📊 Estatísticas** | 4 tabelas: documentos por coleção, resumo, ranking e emojis |
-| 4.13 | "Criar uma conta" com e-mail inválido e senha `123` | aviso vermelho listando **cada campo inválido** (validação do back-end aparecendo na tela) |
-| 4.14 | Criar conta repetindo um e-mail já usado | aviso "Ja existe um registro com o mesmo valor em: email" |
+| 0.1 | `14` → ENTER a cada bloco | 6 blocos: create, read, update, delete, validação/erros e logs |
+| 0.2 | no final | "banco voltou ao estado anterior" e a tabela de contagem igual à do início |
 
-**Por que isso é útil na apresentação:** cada clique executa as mesmas classes do menu; os avisos
-vermelhos mostram a validação e a hierarquia de exceções funcionando de ponta a ponta.
+> Atalho para quem só quer conferir o projeto rapidamente. As etapas seguintes testam as mesmas
+> coisas manualmente, opção por opção.
+
+### Etapa 1 — Entrar e cadastrar usuários (opções 1, 2 e 3)
+
+| # | Digite | Deve acontecer |
+| --- | --- | --- |
+| 1.1 | `1` → `ana@zapchat.dev` → `senha123` | "Bem-vindo(a), aninha!" e o total de mensagens não lidas |
+| 1.2 | `2` → nome `Ab` → e-mail `zzz` → senha `123` → ENTER nos demais | `ErroValidacao` listando **3 problemas** (nome curto, e-mail inválido, senha fraca) |
+| 1.3 | `2` → `Felipe Rocha` → `felipe@zapchat.dev` → `senha123` → `felipao` → `(51) 90000-0000` → `🧑‍💼` → `Novo por aqui` | "Usuario cadastrado" com o `_id` |
+| 1.4 | `2` → `Felipe Clone` → `felipe@zapchat.dev` → `senha123` → ENTER nos demais | `ErroBanco`: "Ja existe um registro com o mesmo valor em: email" (índice único) |
+| 1.5 | `3` → ENTER | tabela com os **6** usuários |
+| 1.6 | `3` → `lima` | só Bruno Lima (pesquisa por nome, apelido ou e-mail) |
+
+### Etapa 2 — Agenda de contatos (opção 5)
+
+| # | Digite | Deve acontecer |
+| --- | --- | --- |
+| 2.1 | `5` | agenda de Ana: Bruno (⭐ favorito), Carla e Diego |
+| 2.2 | `5` → `1` → escolher **Felipe Rocha** → `Felipe da web` → `s` | "Contato adicionado" |
+| 2.3 | `5` → `1` → escolher **Felipe Rocha** de novo → ENTER → `n` | `ErroRegraNegocio`: "Este usuario ja esta na sua lista de contatos" |
+| 2.4 | `5` → `2` → escolher **Carla** | `favorito = true` (repita para voltar a `false`) |
+| 2.5 | `5` → `3` → escolher **Diego** | `bloqueado = true` |
+| 2.6 | `5` | Diego **continua na lista**, agora marcado como bloqueado |
+| 2.7 | `5` → `3` → escolher **Diego** | `bloqueado = false` (desbloqueado) |
+| 2.8 | `5` → `4` → escolher **Felipe** → `s` | "Contato removido" |
+
+### Etapa 3 — Conversas e histórico (opções 6 e 7)
+
+| # | Digite | Deve acontecer |
+| --- | --- | --- |
+| 3.1 | `6` | 3 conversas com a coluna `naoLidas` preenchida |
+| 3.2 | `7` → escolher **Trabalho de Web Back-End** | histórico com: aviso do sistema, mensagem 📌 fixada, anexo `modelagem.pdf`, reações 🔥🔥👏 e o aviso de quantas foram marcadas como lidas |
+| 3.3 | `6` | o `naoLidas` daquela conversa agora está **zerado** |
+
+### Etapa 4 — Enviar mensagens (opção 8)
+
+| # | Digite | Deve acontecer |
+| --- | --- | --- |
+| 4.1 | `8` → `1` → escolher o grupo → ENTER (tipo texto) → `Primeira mensagem da trilha` → `n` | "Mensagem enviada" com o `_id` |
+| 4.2 | `8` → `1` → escolher o grupo → `imagem` → `Print da tela` → `tela.png` → `https://cdn.zapchat.dev/tela.png` → `90` → `n` | mensagem com anexo gravada |
+| 4.3 | `8` → `1` → escolher o grupo → ENTER → `Respondendo a primeira` → `s` → escolher a mensagem 4.1 | mensagem enviada como resposta |
+| 4.4 | `8` → `1` → escolher o grupo → `holograma` → `teste` → `n` | `ErroValidacao`: tipo aceita somente texto, imagem, arquivo, audio, video, sistema |
+| 4.5 | `8` → `2` → escolher **Diego Alves** → ENTER → `Oi Diego, tudo certo?` → `n` | abre uma conversa privada nova e envia |
+| 4.6 | `7` → escolher o grupo | a resposta aparece com `↳ em resposta a: "Primeira mensagem da trilha"` |
+
+### Etapa 5 — Editar, reagir, fixar e apagar (opção 9)
+
+| # | Digite | Deve acontecer |
+| --- | --- | --- |
+| 5.1 | `9` → escolher o grupo → `2` → escolher qualquer mensagem → escolher `👍` | "Reacao adicionada" + resumo |
+| 5.2 | repita 5.1 com a **mesma** mensagem e o **mesmo** emoji | "Reacao removida" (o mesmo emoji alterna) |
+| 5.3 | `9` → escolher o grupo → `1` → escolher uma mensagem **sua** → `Texto editado na trilha` | "Mensagem editada" |
+| 5.4 | `9` → escolher o grupo → `3` → escolher uma mensagem | "Mensagem fixada" (repita para desafixar) |
+| 5.5 | `9` → escolher o grupo → `4` → escolher a mensagem 4.2 (do anexo) | vira "Esta mensagem foi apagada" |
+| 5.6 | `7` → escolher o grupo | a mensagem apagada **continua no histórico**, marcada como apagada |
+| 5.7 | `9` → escolher o grupo → `5` → escolher a mensagem 4.3 → `s` | excluída do banco, com as reações removidas em cascata |
+
+> Nas opções `1`, `4` e `5` a lista traz **só as suas mensagens** — é a regra "somente o autor".
+
+### Etapa 6 — Grupos (opção 10)
+
+| # | Digite | Deve acontecer |
+| --- | --- | --- |
+| 6.1 | `10` → `1` → `Grupo da trilha` → `Grupo criado no teste` → `🧪` → escolher **Bruno** → `s` → escolher **Carla** → `n` | grupo criado com mensagem automática do sistema |
+| 6.2 | `10` → `2` → escolher **Grupo da trilha** → escolher **Diego** | participante adicionado + aviso "Diego Alves entrou no grupo" |
+| 6.3 | `10` → `4` → escolher **Grupo da trilha** → escolher **Bruno** | administradores passam a 2 |
+| 6.4 | `10` → `5` → escolher **Grupo da trilha** → `Grupo renomeado` | "Grupo renomeado" |
+| 6.5 | `10` → `3` → escolher **Grupo renomeado** → escolher **Diego** | participante removido |
+| 6.6 | `10` → `5` → escolher uma conversa **privada** | `ErroValidacao`: "Somente conversas do tipo grupo possuem nome" |
+| 6.7 | `10` → `6` → escolher **Grupo renomeado** → `s` | conversa excluída com as mensagens e reações |
+
+### Etapa 7 — Busca, relatórios e manutenção (opções 11, 12 e 13)
+
+| # | Digite | Deve acontecer |
+| --- | --- | --- |
+| 7.1 | `11` → `README` | lista as mensagens que contêm o termo (índice de texto) |
+| 7.2 | `11` → `zzzzzz` | "Mensagens encontradas: 0" |
+| 7.3 | `12` | documentos por coleção, totais, ranking de remetentes e emojis |
+| 7.4 | `13` → `2` | contagem de documentos nas 5 coleções |
+| 7.5 | `13` → `3` | os 22 índices, com `unico = true` nos quatro índices únicos |
+| 7.6 | `13` → `1` | "Indices criados" (rodar de novo não quebra nada) |
+
+> Não use `13` → `4` ("Limpar o banco") no meio da trilha: ele apaga tudo.
+
+### Etapa 8 — Trocar de usuário e regras por perfil (opção 1)
+
+| # | Digite | Deve acontecer |
+| --- | --- | --- |
+| 8.1 | `1` → `2` → `carla@zapchat.dev` → `senha123` | sessão troca para Carla (veja o cabeçalho do menu) |
+| 8.2 | `10` → `2` → escolher **Trabalho de Web Back-End** → escolher qualquer um | `ErroRegraNegocio`: "Somente administradores podem adicionar participantes" |
+| 8.3 | `9` → escolher o grupo → `1` | a lista traz **só as mensagens de Carla** |
+| 8.4 | `1` → `1` | "Ate logo, carlinha!" |
+| 8.5 | `6` | "Entre com um usuario antes de usar esta opcao (opcao 1)" |
+
+### Etapa 9 — Perfil e senha (opção 4)
+
+| # | Digite | Deve acontecer |
+| --- | --- | --- |
+| 9.1 | `1` → `ana@zapchat.dev` → `senha123` | entra de novo |
+| 9.2 | `4` | tabela do perfil, **sem o hash da senha** |
+| 9.3 | `4` → `1` → ENTER nos campos até `Recado` → `Testando a trilha` | "Perfil atualizado" |
+| 9.4 | `4` → `2` → escolher `ocupado` | status alterado (aparece no cabeçalho do menu) |
+| 9.5 | `4` → `3` → `qualquercoisa1` → `nova456` | `ErroRegraNegocio`: "A senha atual informada esta incorreta" |
+| 9.6 | `4` → `3` → `senha123` → `novaSenha456` | "Senha alterada" |
+| 9.7 | `1` → `1` (encerrar) → `1` → `ana@zapchat.dev` → `novaSenha456` | entra com a senha nova |
+| 9.8 | `4` → `3` → `novaSenha456` → `senha123` | devolve a senha original (importante antes de apresentar) |
+
+### Etapa 10 — Encerrar
+
+| # | Digite | Deve acontecer |
+| --- | --- | --- |
+| 10.1 | `99` | "Opcao invalida" — e o menu continua |
+| 10.2 | `0` | "Ate logo" e "Aplicacao encerrada" |
+| 10.3 | abrir `logs/errors.log` | todos os erros que você provocou na trilha estão registrados |
+
+**O que a trilha comprova:** as 13 opções do menu, as 5 coleções, as quatro operações CRUD, as regras
+de negócio (autor, administrador, participante), a validação de campos e os erros registrados em log.
 
 ---
 
-## Parte 5 — Logs
+## Parte 4 — Logs
 
 | # | Passo | Resultado esperado |
 | --- | --- | --- |
-| 5.1 | Abrir `logs/errors.log` | blocos com `[data hora]`, `NIVEL`, `TIPO`, `OPERACAO`, `MENSAGEM`, `DETALHES` e `STACK` |
-| 5.2 | Conferir os tipos registrados | `ErroValidacao`, `ErroNaoEncontrado`, `ErroRegraNegocio`, `ErroBanco` e `ErroConexao` |
-| 5.3 | Abrir `logs/app.log` | além dos erros, o histórico de inserções, atualizações, exclusões e conexões |
-| 5.4 | Parar o MongoDB (`net stop MongoDB`) e rodar `npm start` | mensagem clara "Nao foi possivel conectar ao MongoDB...", **sem stack trace**, e o erro gravado no log |
-| 5.5 | Religar o MongoDB (`net start MongoDB`) | a aplicação volta a funcionar normalmente |
+| 4.1 | Abrir `logs/errors.log` | blocos com `[data hora]`, `NIVEL`, `TIPO`, `OPERACAO`, `MENSAGEM`, `DETALHES` e `STACK` |
+| 4.2 | Conferir os tipos registrados | `ErroValidacao`, `ErroNaoEncontrado`, `ErroRegraNegocio`, `ErroBanco` e `ErroConexao` |
+| 4.3 | Abrir `logs/app.log` | além dos erros, o histórico de inserções, atualizações, exclusões e conexões |
+| 4.4 | Parar o MongoDB (`net stop MongoDB`) e rodar `npm start` | mensagem clara "Nao foi possivel conectar ao MongoDB...", **sem stack trace**, e o erro gravado no log |
+| 4.5 | Religar o MongoDB (`net start MongoDB`) | a aplicação volta a funcionar normalmente |
 
 **O que isso comprova:** critério *Implementação e armazenamento de logs* + tratamento do erro de
 conexão exigido no item 8 do enunciado.
+
+---
+
+## Parte 5 — Visualizador web (extra opcional)
+
+```bash
+npm run web        # depois abra http://localhost:3000
+```
+
+| # | Ação | Resultado esperado |
+| --- | --- | --- |
+| 5.1 | abrir a página | lista de conversas do primeiro usuário, com selos de não lidas |
+| 5.2 | clicar numa conversa | histórico com autor, horário, anexo, 📌, reações e leituras |
+| 5.3 | trocar o usuário em "Ver como" | a lista de conversas muda para a desse usuário |
+| 5.4 | botão 📊 Estatísticas | 4 tabelas (coleções, resumo, ranking, emojis) |
+| 5.5 | conferir que é somente leitura | não há formulários; a página só exibe dados |
+
+> O projeto roda sem essa pasta: `npm start`, `npm run demo` e os demais scripts não dependem dela.
 
 ---
 
@@ -200,8 +261,7 @@ conexão exigido no item 8 do enunciado.
 - [ ] Tratamento de exceções em todas as operações.
 - [ ] Geração de logs em arquivo.
 - [ ] `npm run demo` roda do início ao fim sem falha inesperada.
-- [ ] O projeto roda **sem** a pasta `web/` (mova-a para fora e repita as Partes 1 a 3: a interface
-      é um extra e o núcleo não depende dela).
+- [ ] O projeto roda **sem** a pasta `web/` (ela é um extra; mova-a para fora e repita as Partes 1 a 3).
 
 ---
 
@@ -213,7 +273,7 @@ conexão exigido no item 8 do enunciado.
    CRUD; as entidades só declaram `colecao`, `camposObrigatorios`, `camposAtualizaveis`, `indices` e
    `validarCampos()`. Cite herança, polimorfismo (`paraDocumento`, `validarCampos`) e encapsulamento
    (`#senhaHash` em `Usuario`).
-3. **CRUD ao vivo (2 min).** `npm run demo` — ou a interface web, que é mais visual.
+3. **CRUD ao vivo (2 min).** `npm run demo`, que percorre as quatro operações nas cinco coleções.
 4. **Validação e exceções (1,5 min).** Tente cadastrar um usuário inválido e mostre a lista de erros;
    depois mostre a hierarquia em `src/errors/`.
 5. **Logs (1 min).** Abra `logs/errors.log` e mostre um registro completo.
@@ -231,5 +291,5 @@ conexão exigido no item 8 do enunciado.
 - **"Por que duas formas de excluir mensagem?"** `excluirParaTodos` é exclusão lógica (preserva o
   histórico, como no WhatsApp); `excluirPorId` remove o documento e o `ChatService` apaga as reações
   vinculadas e recalcula o resumo da conversa.
-- **"Usou algum framework?"** Não. Só o driver oficial `mongodb`; `.env`, hash de senha, logs,
-  terminal e servidor web usam módulos nativos (`fs`, `path`, `crypto`, `readline`, `http`).
+- **"Usou algum framework?"** Não. Só o driver oficial `mongodb`; `.env`, hash de senha, logs e
+  terminal usam módulos nativos (`fs`, `path`, `crypto`, `readline`).

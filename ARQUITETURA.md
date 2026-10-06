@@ -18,21 +18,16 @@ Para instalar e testar, veja o [README](README.md). Para o roteiro de validaçã
 7. [Validação dos dados](#7-validação-dos-dados)
 8. [Tratamento de exceções](#8-tratamento-de-exceções)
 9. [Registro de logs](#9-registro-de-logs)
-10. [Funcionalidades implementadas](#10-funcionalidades-implementadas)
-11. [Interface web (extra opcional)](#11-interface-web-extra-opcional)
-12. [Mapa dos requisitos do enunciado](#12-mapa-dos-requisitos-do-enunciado)
+10. [Visualizador web (extra opcional)](#10-visualizador-web-extra-opcional)
+11. [Mapa dos requisitos do enunciado](#11-mapa-dos-requisitos-do-enunciado)
 
 ---
 
 ## 1. Visão geral
 
-Aplicação back-end que simula o armazenamento e o gerenciamento de um serviço de mensagens
-instantâneas. A comunicação com o banco é feita exclusivamente pelo **MongoDB Driver para Node.js**.
-
-- **5 coleções** no MongoDB;
-- **6 classes de modelo** (uma abstrata + cinco entidades);
-- única dependência externa: `mongodb`. O restante usa módulos nativos do Node.js
-  (`fs`, `path`, `crypto`, `readline`, `http`).
+Aplicação back-end de mensagens instantâneas. A comunicação com o banco é feita exclusivamente
+pelo **MongoDB Driver para Node.js**; a única dependência externa é `mongodb`, e o restante usa
+módulos nativos (`fs`, `path`, `crypto`, `readline`, `http`).
 
 ```
 Modelo (classe abstrata — CRUD genérico, validação, log e tratamento de exceções)
@@ -174,78 +169,43 @@ Criados por `npm run setup` (ou pela opção 13 do menu).
 
 ```
 zapchat/
-├── index.js                     # ponto de entrada: abre a conexão e o menu interativo
-├── package.json                 # dependências e scripts
-├── .env.example                 # modelo de configuração (copiar para .env)
+├── index.js                 # ponto de entrada: conecta e abre o menu
+├── package.json
+├── .env.example             # modelo de configuração
 │
 ├── src/
-│   ├── Aplicacao.js             # ciclo de vida: conecta, executa, trata exceções e desconecta
+│   ├── Aplicacao.js         # ciclo de vida: conecta, executa, trata exceções, desconecta
+│   ├── config/config.js     # configurações (lê o .env com o módulo nativo fs)
 │   │
-│   ├── config/
-│   │   └── config.js            # configurações (lê o .env com o módulo nativo fs)
-│   │
-│   ├── database/
-│   │   ├── Database.js          # conexão com o MongoDB (Singleton, MongoDB Driver)
-│   │   └── Manutencao.js        # criação de índices, contagem e limpeza das coleções
-│   │
-│   ├── errors/                  # hierarquia de exceções da aplicação
-│   │   ├── ErroAplicacao.js     # classe base
-│   │   ├── ErroValidacao.js     # campos obrigatórios / dados inválidos
-│   │   ├── ErroNaoEncontrado.js # registro inexistente
-│   │   ├── ErroRegraNegocio.js  # regra do domínio violada
-│   │   ├── ErroBanco.js         # falhas do MongoDB Driver (ex.: índice único)
-│   │   ├── ErroConexao.js       # falha de conexão com o banco
-│   │   └── index.js
-│   │
-│   ├── models/                  # MODEL — entidades (domínio + acesso aos dados)
-│   │   ├── Modelo.js            # classe abstrata com o CRUD genérico
-│   │   ├── Usuario.js
-│   │   ├── Contato.js
-│   │   ├── Conversa.js
-│   │   ├── Mensagem.js
-│   │   ├── Reacao.js
-│   │   └── index.js
-│   │
-│   ├── services/                # MODEL — regras que envolvem mais de uma coleção
+│   ├── models/              # MODEL — entidades: domínio + acesso aos dados
+│   │   ├── Modelo.js        #   classe abstrata com o CRUD genérico
+│   │   └── Usuario.js · Contato.js · Conversa.js · Mensagem.js · Reacao.js
+│   ├── services/            # MODEL — regras que envolvem mais de uma coleção
 │   │   └── ChatService.js
+│   ├── views/               # VIEW — apresentação
+│   │   └── Terminal.js      #   formatação da saída no terminal
+│   ├── controllers/         # CONTROLLER — recebe a entrada e aciona o Model
+│   │   ├── Menu.js          #   menu interativo
+│   │   └── TrilhaGuiada.js  #   demonstração guiada (opção 14)
 │   │
-│   ├── views/                   # VIEW — apresentação
-│   │   └── Terminal.js          # formatação da saída no terminal
-│   │
-│   ├── controllers/             # CONTROLLER — recebe a entrada e aciona o Model
-│   │   └── Menu.js              # menu interativo do terminal
-│   │
-│   └── utils/
-│       ├── Logger.js            # gravação dos logs em arquivo
-│       ├── Validador.js         # validações reutilizáveis
-│       └── Seguranca.js         # hash e verificação de senha (crypto nativo)
+│   ├── database/            # Database.js (conexão Singleton) e Manutencao.js (índices)
+│   ├── errors/              # ErroAplicacao + Validacao, NaoEncontrado, RegraNegocio, Banco, Conexao
+│   └── utils/               # Logger.js, Validador.js e Seguranca.js (hash de senha)
 │
-├── scripts/
-│   ├── setup.js                 # cria as coleções e os índices
-│   ├── seed.js                  # carrega dados de exemplo
-│   ├── demo.js                  # demonstração completa (CRUD + erros + logs)
-│   └── reset.js                 # limpa o banco de dados
-│
-├── web/                         # interface web de teste (extra opcional)
-│   ├── servidor.js              # ponto de entrada (npm run web)
-│   ├── ServidorWeb.js           # servidor HTTP nativo + tradução das exceções em status HTTP
-│   ├── rotas.js                 # CONTROLLER web — rotas da API JSON
-│   └── publico/                 # VIEW web — index.html, estilo.css e app.js
-│
-└── logs/
-    ├── errors.log               # somente exceções capturadas
-    └── app.log                  # histórico completo de operações
+├── scripts/                 # setup.js, seed.js, demo.js e reset.js
+├── web/                     # visualizador somente leitura (extra): servidor.js + publico/
+└── logs/                    # errors.log (exceções) e app.log (histórico completo)
 ```
 
 ### Organização MVC
 
-O projeto segue o padrão **MVC**, com cada camada em sua própria pasta:
+Cada camada em sua própria pasta:
 
 | Camada | Pasta / arquivos | Responsabilidade |
 | --- | --- | --- |
 | **Model** | `src/models/` (5 entidades + `Modelo` abstrata) e `src/services/ChatService.js` | representa os dados, as regras de negócio e todo o acesso ao MongoDB |
 | **View** | `src/views/Terminal.js` (terminal) e `web/publico/` (navegador) | só apresenta informação; não acessa o banco nem conhece as entidades |
-| **Controller** | `src/controllers/Menu.js` (terminal) e `web/rotas.js` (API) | recebe a entrada do usuário, aciona o Model e entrega o resultado à View |
+| **Controller** | `src/controllers/Menu.js`, `src/controllers/TrilhaGuiada.js` e `web/servidor.js` | recebem a entrada do usuário, acionam o Model e entregam o resultado à View |
 
 As demais pastas são **infraestrutura**, usadas pelas três camadas: `src/database/` (conexão),
 `src/errors/` (exceções), `src/utils/` (log, validação, senha) e `src/config/` (configuração).
@@ -253,9 +213,9 @@ As demais pastas são **infraestrutura**, usadas pelas três camadas: `src/datab
 O fluxo de uma operação é sempre o mesmo:
 
 ```
-usuário → Controller (Menu / rotas) → Model (Usuario, Mensagem, ChatService...) → MongoDB
-                                            ↓
-                                     View (Terminal / página)
+usuário → Controller (Menu) → Model (Usuario, Mensagem, ChatService...) → MongoDB
+                                     ↓
+                              View (Terminal)
 ```
 
 Um indício prático da separação: `src/views/Terminal.js` **não tem nenhum `require`** de entidade,
@@ -269,8 +229,8 @@ serviço ou banco — ele só recebe dados prontos e formata.
 - **Entidades** cuidam da sua coleção e das consultas próprias da temática.
 - **`ChatService`** coordena operações que envolvem várias coleções (enviar mensagem e atualizar o
   resumo da conversa, excluir usuário com todas as dependências, montar o painel do usuário).
-- **`controllers/Menu.js`**, **`views/Terminal.js`** e **`web/`** cuidam apenas da interface;
-  nenhuma regra de negócio mora neles.
+- **`controllers/Menu.js`** e **`views/Terminal.js`** cuidam apenas da interface; nenhuma regra de
+  negócio mora neles.
 
 ---
 
@@ -296,7 +256,7 @@ consultar, atualizar, excluir, contar, agregar, validar, tratar exceções e reg
 
 ## 7. Validação dos dados
 
-A validação acontece **antes** de qualquer acesso ao banco, em `Modelo.validar()` e
+Acontece **antes** de qualquer acesso ao banco, em `Modelo.validar()` e
 `Modelo.prepararAtualizacao()`, apoiadas na classe `Validador`:
 
 - **campos obrigatórios** de cada entidade (declarados em `camposObrigatorios`);
@@ -332,25 +292,18 @@ inesperadas do Node.js ou do driver:
 | Regra da aplicação violada (não participa da conversa, não é o autor, contato repetido, ...) | `ErroRegraNegocio` |
 | Qualquer erro não previsto | registrado por `Aplicacao` e pelos tratadores de `unhandledRejection` / `uncaughtException` |
 
-Toda operação do driver passa por `Modelo.executar()`, que converte a falha em `ErroBanco` (por
-exemplo, o código 11000 vira "já existe um registro com o mesmo valor em: email") e registra no log
-antes de propagar. Nenhuma dessas situações encerra a aplicação: no menu, o erro é exibido e o menu
-continua disponível.
-
-O script `npm run demo` demonstra **34 cenários de falha** diferentes, todos capturados, tratados e
-registrados em log.
+Toda operação do driver passa por `Modelo.executar()`, que converte a falha em `ErroBanco` (o
+código 11000, por exemplo, vira "já existe um registro com o mesmo valor em: email") e registra no
+log antes de propagar. Nada disso encerra a aplicação: no menu o erro é exibido e o menu continua.
+O `npm run demo` percorre **34 cenários de falha**, todos tratados e registrados.
 
 ---
 
 ## 9. Registro de logs
 
-Os arquivos ficam na pasta `logs/` do próprio projeto:
-
-- **`logs/errors.log`** — somente as exceções capturadas;
-- **`logs/app.log`** — histórico completo (inserções, atualizações, exclusões, conexões e erros).
-
-Cada registro informa data/hora, nível, tipo do erro, operação, mensagem, detalhes, causa original e
-um resumo do *stack trace*:
+Na pasta `logs/` do projeto: **`errors.log`** (só exceções) e **`app.log`** (histórico completo —
+inserções, atualizações, exclusões, conexões e erros). Cada registro traz data/hora, nível, tipo,
+operação, mensagem, detalhes, causa e um resumo do *stack trace*:
 
 ```
 [29/09/2026 22:09:34]
@@ -367,58 +320,30 @@ O nível mínimo gravado pode ser ajustado pela variável `LOG_NIVEL` (`DEBUG`, 
 
 ---
 
-## 10. Funcionalidades implementadas
+## 10. Visualizador web (extra opcional)
 
-**Usuários** — cadastro com validação; senha só como hash (`crypto.scryptSync` + salt);
-autenticação com registro do último acesso; alteração de perfil, de status de presença e de senha;
-pesquisa por nome, apelido ou e-mail.
+`npm run web` sobe uma página **somente leitura** em <http://localhost:3000>, com o módulo nativo
+`http` e HTML/CSS/JS puros (~650 linhas). São **quatro rotas, todas `GET`**, cada uma chamando uma
+classe do núcleo:
 
-**Contatos** — adicionar, apelidar, favoritar, bloquear e remover; listagem da agenda com os dados
-do usuário (`$lookup`); o bloqueio impede que a outra pessoa inicie uma conversa.
+| Rota | Chama |
+| --- | --- |
+| `GET /api/usuarios` | `Usuario.listar` |
+| `GET /api/usuarios/:id/painel` | `ChatService.painelDoUsuario` |
+| `GET /api/conversas/:id/mensagens` | `Mensagem.historicoDetalhado` (`$lookup`) |
+| `GET /api/estatisticas` | `ChatService.estatisticasGerais` |
 
-**Conversas** — abertura de conversa privada (reaproveitada quando já existe); criação de grupos com
-descrição, ícone e administradores; adicionar/remover participantes e promover administradores (com
-aviso automático do sistema no grupo); renomear grupo; excluir conversa com mensagens e reações.
+Qualquer outro método HTTP responde `405 — Esta interface e somente leitura`. A hierarquia de
+exceções vira status num único ponto: `ErroValidacao` → 400, `ErroNaoEncontrado` → 404,
+`ErroConexao` → 503, demais erros da aplicação → 409.
 
-**Mensagens** — envio de texto e de mídia com anexo; resposta a uma mensagem específica; histórico
-paginado e histórico detalhado com autor, reações e mensagem respondida; busca por conteúdo com
-índice de texto; controle de leitura e contagem de não lidas; edição (somente o autor); fixar;
-exclusão **lógica** ("apagar para todos", preserva o histórico) e **definitiva** (remove o documento
-e as reações vinculadas, recalculando o resumo da conversa).
-
-**Reações** — reagir com emoji alternando entre adicionar e remover; resumo por mensagem; ranking
-geral de emojis.
-
-**Relatórios** — painel do usuário (conversas + não lidas + agenda); mensagens por autor em uma
-conversa; ranking de remetentes; contagem de documentos por coleção.
+> Serve de prova prática da separação MVC: duas interfaces diferentes (terminal e navegador) sobre
+> o mesmo Model, sem uma linha de regra de negócio duplicada. Se a interface não for considerada no
+> escopo, basta ignorar a pasta `web/`.
 
 ---
 
-## 11. Interface web (extra opcional)
-
-Além do menu do terminal, o projeto acompanha uma interface web simples (`npm run web`), criada para
-testar e apresentar a aplicação de forma visual.
-
-- **Nenhuma dependência nova.** O servidor usa o módulo nativo `http`; a página usa HTML, CSS e
-  JavaScript puros (sem Express, sem React, sem HTMX, sem CDN).
-- **Nenhuma regra de negócio duplicada.** As rotas em `web/rotas.js` apenas chamam as mesmas classes
-  de entidade e o mesmo `ChatService` usados pelo menu.
-- **A hierarquia de exceções vira status HTTP** em um único ponto (`ServidorWeb`):
-
-  | Exceção | Status HTTP |
-  | --- | --- |
-  | `ErroValidacao` | 400 |
-  | `ErroNaoEncontrado` | 404 |
-  | `ErroRegraNegocio` / `ErroBanco` | 409 |
-  | `ErroConexao` | 503 |
-  | qualquer outra | 500 |
-
-> A pasta `web/` é um complemento: o projeto funciona por completo apenas com `npm start`,
-> `npm run demo` e os demais scripts. Se a interface não for considerada no escopo, basta ignorá-la.
-
----
-
-## 12. Mapa dos requisitos do enunciado
+## 11. Mapa dos requisitos do enunciado
 
 | Requisito | Onde está |
 | --- | --- |
