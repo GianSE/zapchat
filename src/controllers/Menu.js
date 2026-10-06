@@ -17,6 +17,7 @@ const { stdin: entrada, stdout: saida } = require('node:process');
 
 const { Usuario, Contato, Conversa, Mensagem, Reacao } = require('../models');
 const ChatService = require('../services/ChatService');
+const TrilhaGuiada = require('./TrilhaGuiada');
 const Manutencao = require('../database/Manutencao');
 const Terminal = require('../views/Terminal');
 const logger = require('../utils/Logger');
@@ -246,6 +247,44 @@ class Menu {
     Terminal.sucesso(`Ate logo, ${this.#usuario.nomeExibicao}!`);
 
     this.#usuario = null;
+  }
+
+  /**
+   * Executa a trilha guiada: demonstracao automatica de toda a aplicacao.
+   *
+   * @returns {Promise<void>}
+   */
+  async trilhaGuiada() {
+    const trilha = new TrilhaGuiada({
+      pausar: () => this.perguntar('\n[ENTER para continuar]')
+    });
+
+    await trilha.executar();
+  }
+
+  /**
+   * Opcao 1 do menu: entra quando nao ha sessao aberta e, quando ha, permite
+   * encerrar a sessao ou trocar de usuario.
+   *
+   * @returns {Promise<void>}
+   */
+  async gerenciarSessao() {
+    if (!this.#usuario) {
+      await this.entrar();
+      return;
+    }
+
+    Terminal.secao(`Sessao atual: ${this.#usuario.nomeExibicao} (${this.#usuario.status})`);
+    Terminal.info('\n  1. Encerrar sessao    2. Entrar com outro usuario    0. Voltar');
+
+    const opcao = await this.perguntar('Opcao:');
+
+    if (opcao === '1') {
+      await this.sair();
+    } else if (opcao === '2') {
+      await this.sair();
+      await this.entrar();
+    }
   }
 
   /**
@@ -736,7 +775,7 @@ class Menu {
    */
   get opcoes() {
     return [
-      { chave: '1', titulo: 'Entrar (autenticar usuario)', acao: () => this.entrar() },
+      { chave: '1', titulo: 'Entrar / encerrar sessao', acao: () => this.gerenciarSessao() },
       { chave: '2', titulo: 'Cadastrar usuario', acao: () => this.cadastrarUsuario() },
       { chave: '3', titulo: 'Listar / pesquisar usuarios', acao: () => this.listarUsuarios() },
       { chave: '4', titulo: 'Meu perfil', acao: () => this.meuPerfil() },
@@ -749,7 +788,7 @@ class Menu {
       { chave: '11', titulo: 'Pesquisar mensagens', acao: () => this.pesquisarMensagens() },
       { chave: '12', titulo: 'Estatisticas', acao: () => this.estatisticas() },
       { chave: '13', titulo: 'Manutencao do banco de dados', acao: () => this.manutencao() },
-      { chave: '14', titulo: 'Encerrar sessao do usuario', acao: () => this.sair() }
+      { chave: '14', titulo: '🚀 Trilha guiada (demonstra a aplicacao inteira)', acao: () => this.trilhaGuiada() }
     ];
   }
 
@@ -781,6 +820,11 @@ class Menu {
   async iniciar() {
     Terminal.titulo('bem-vindo ao zapchat');
     Terminal.info('Aplicacao de mensagens instantaneas com Node.js e MongoDB.');
+    Terminal.info('');
+    Terminal.info('Para conhecer a aplicacao inteira em poucos minutos, escolha a opcao 14');
+    Terminal.info('(trilha guiada): ela demonstra o CRUD nas 5 colecoes, a validacao, o');
+    Terminal.info('tratamento de erros e os logs, criando e removendo os proprios dados.');
+    Terminal.info('');
     Terminal.info('Dica: execute "npm run seed" para carregar dados de exemplo.');
 
     while (!this.#encerrar) {
