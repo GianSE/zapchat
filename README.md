@@ -20,6 +20,16 @@ campos obrigatórios, tratamento de exceções e registro de logs em arquivo.
 | **View** | `src/views/Terminal.js` (terminal) e `web/publico/` (navegador) |
 | **Controller** | `src/controllers/Menu.js` (terminal) e `web/rotas.js` (API) |
 
+**Dois modos de execução** — a interface gráfica é um extra, não um requisito:
+
+| Modo | Comando | Precisa de |
+| --- | --- | --- |
+| **Terminal** (é o projeto avaliado) | `npm start` e `npm run demo` | apenas `src/` e `scripts/` |
+| **Web** (extra opcional) | `npm run web` | a pasta `web/`, que pode ser apagada sem afetar nada |
+
+O núcleo não importa nada de `web/`: apagando a pasta, `setup`, `seed`, `demo`, `reset` e o menu
+continuam funcionando normalmente.
+
 | Documento | Conteúdo |
 | --- | --- |
 | **README.md** (este) | instalar e testar, passo a passo |
@@ -188,6 +198,9 @@ Para usar o MongoDB Atlas, basta trocar a URI por
 ## 9. Sobre a entrega
 
 - A pasta `node_modules` **não** faz parte da entrega — rode `npm install` para recriá-la.
+- A pasta `web/` é **opcional**: nenhum arquivo de `src/`, `scripts/` ou `index.js` depende dela.
+  Se a interface não for considerada no escopo, basta ignorá-la (ou apagá-la, junto com o script
+  `web` do `package.json`) que o projeto continua completo.
 - Os arquivos de log são gerados na execução; a pasta `logs/` acompanha o projeto.
 - Não são usados frameworks nem bibliotecas além do driver oficial `mongodb`: leitura do `.env`,
   hash de senhas, logs, interface de terminal e servidor web usam apenas módulos nativos do Node.js

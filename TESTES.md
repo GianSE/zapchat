@@ -200,6 +200,8 @@ conexão exigido no item 8 do enunciado.
 - [ ] Tratamento de exceções em todas as operações.
 - [ ] Geração de logs em arquivo.
 - [ ] `npm run demo` roda do início ao fim sem falha inesperada.
+- [ ] O projeto roda **sem** a pasta `web/` (mova-a para fora e repita as Partes 1 a 3: a interface
+      é um extra e o núcleo não depende dela).
 
 ---
 
