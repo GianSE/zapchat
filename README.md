@@ -1,8 +1,9 @@
 # 💬 ZapChat
-## Gian Pedro Rodrigues (RA 2503638)
+## Gian Pedro Rodrigues | RA: 2503638
+### Projeto 1 de **EC48B — Programação Web Back-End**
+
 [![Architecture diagram](https://gitdiagram.com/diagram-badge.svg)](https://gitdiagram.com/gianse/zapchat?utm_source=readme&utm_medium=badge)
 
-Projeto 1 de **EC48B — Programação Web Back-End**
 
 Temática: **mensagens instantâneas** · Node.js + MongoDB Driver, sem frameworks.
 
